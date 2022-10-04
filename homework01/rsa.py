@@ -63,10 +63,10 @@ def multiplicative_inverse(e: int, phi: int) -> int:
 
         phi = e % phi
         e = tmp
-        t = y
+        tmp_y = y
 
         y = x - q * y
-        x = t
+        x = tmp_y
 
     if x < 0:
         x = x + phi0
