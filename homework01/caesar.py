@@ -39,16 +39,7 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     >>> decrypt_caesar("")
     ''
     """
-    plaintext = ""
-    for char in ciphertext:
-        if char.isalpha():
-            if char.isupper():
-                plaintext += chr((ord(char) - shift - 65) % 26 + 65)
-            else:
-                plaintext += chr((ord(char) - shift - 97) % 26 + 97)
-        else:
-            plaintext += char
-    return plaintext
+    return encrypt_caesar(ciphertext, -shift)
 
 
 def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
