@@ -2,7 +2,7 @@ import math
 import time
 import typing as tp
 
-import pandas as pd # type: ignore
+import pandas as pd  # type: ignore
 from pandas import json_normalize
 from vkapi import session
 from vkapi.config import VK_CONFIG
