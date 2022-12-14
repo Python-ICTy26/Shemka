@@ -14,11 +14,22 @@ def ego_network(
 ) -> tp.List[tp.Tuple[int, int]]:
     """
     Построить эгоцентричный граф друзей.
-
     :param user_id: Идентификатор пользователя, для которого строится граф друзей.
     :param friends: Идентификаторы друзей, между которыми устанавливаются связи.
     """
-    pass
+
+    if not friends:
+        friends_response = get_friends(user_id=user_id, fields=["nickname"])
+        friends = [
+            user["id"] for user in friends_response.items if not user.get("deactivated")
+        ]
+    data = get_mutual(user_id, target_uids=friends)
+    graph = []
+    for user_data in data:
+        for user_friend in user_data["common_friends"]:
+            graph.append((user_data["id"], user_friend))
+
+    return graph
 
 
 def plot_ego_network(net: tp.List[tp.Tuple[int, int]]) -> None:
