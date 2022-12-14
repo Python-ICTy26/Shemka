@@ -1,3 +1,4 @@
+import math
 import time
 import typing as tp
 
@@ -61,60 +62,38 @@ def get_wall_execute(
     :param progress: Callback для отображения прогресса.
     """
 
-    if count == 0:
-        code = f'return API.wall.get({{"owner_id": "{owner_id}", "domain":"{domain}", "count": "1"}});'
-        params = {
-            "code": code,
-            "access_token": VK_CONFIG["access_token"],
-            "v": VK_CONFIG["version"],
-        }
-        count = session.post("execute", data=params).json()["response"]["count"]
+    code = """return API.wall.get({
+         "owner_id": "%s",
+         "domain": "%s",
+         "offset": %d,
+         "count": "%d",
+         "filter": "%s",
+         "extended": %d,
+         "fields": "%s",
+         "v": "%s"
+    });"""
 
-    offsets_iterator = [
-        [q for q in range(i, i + max_count, max_count // 25) if q < count]
-        for i in range(0, count, max_count)
-    ]
-    if progress is not None:
-        offsets_iterator = progress(offsets_iterator)
-
-    posts = list()
-
-    for offsets in offsets_iterator:
-        code = f"""
-        var posts = [];
-        var count = 0;
-        var i = 0;
-        var offsets = {offsets};
-        
-        while ((i < 25) && (i < offsets.length)) {{
-            var new_posts = API.wall.get({{
-                "owner_id": "{owner_id}",
-                "domain": "{domain}",
-                "offset": offsets[i],
-                "count": "{max_count // 25}",
-                "filter": "{filter}",
-                "extended": {extended},
-                "fields": "{','.join(fields) if fields is not None else ''}",
-                "v": "{VK_CONFIG['version']}"
-            }})["items"];
-            posts = posts + new_posts;
-            
-            i = i + 1;
-        }}
-        
-        return {{"count": count, "items": posts}};
-        """
-
-        params = {
-            "code": code,
-            "access_token": VK_CONFIG["access_token"],
-            "v": VK_CONFIG["version"],
-        }
-        ts = time.time()
-        new_posts = session.post("execute", params=params).json()["response"]
-        delay = max([0, 1 - (time.time() - ts)])
-        time.sleep(delay)
-        posts.extend(new_posts["items"])
-        posts = [p for p in posts if p is not None]
-
-    return json_normalize(posts)
+    answer = []
+    for i in range(math.ceil(count / 100)):
+        code_for_request = code % (
+            owner_id,
+            domain,
+            100 * i,
+            100 * (i + 1) if count > 100 else count,
+            filter,
+            extended,
+            fields,
+            VK_CONFIG["version"],
+        )
+        response = session.post(
+            url="execute",
+            data={
+                "code": code_for_request,
+                "access_token": VK_CONFIG["access_token"],
+                "v": VK_CONFIG["version"],
+            },
+        )
+        answer += response.json()["response"]["items"]
+        if i % 2 == 0:
+            time.sleep(1)
+    return json_normalize(answer)
