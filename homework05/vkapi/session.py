@@ -1,8 +1,8 @@
 import typing as tp
 
-import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+import requests # type: ignore
+from requests.adapters import HTTPAdapter # type: ignore
+from requests.packages.urllib3.util.retry import Retry # type: ignore
 from vkapi.exceptions import APIError
 
 
@@ -55,18 +55,18 @@ class Session:
             lambda response, *args, **kwargs: response.raise_for_status()
         ]
 
-    def get(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        return self._request(url=url, method="get", *args, **kwargs)
+    def get(self, url: str, *args, **kwargs) -> requests.Response:
+        return self._request(url, "get", *args, **kwargs)
 
-    def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        return self._request(url=url, method="post", *args, **kwargs)
+    def post(self, url: str, *args, **kwargs) -> requests.Response:
+        return self._request(url, "post", *args, **kwargs)
 
-    def _request(self, url: str, method: str, *args: tp.Any, **kwargs: tp.Any):
+    def _request(self, url: str, method: str, *args, **kwargs) -> requests.Response:
         request_url = f"{self.base_url}/{url}"
         if method == "get":
-            response = self._session.get(request_url, *args, **kwargs)
+            response = self._session.get(url=request_url, *args, **kwargs)
         elif method == "post":
-            response = self._session.post(request_url, *args, **kwargs)
+            response = self._session.post(url=request_url, *args, **kwargs)
         else:
             raise APIError(f"{method} is not supported")
 

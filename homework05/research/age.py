@@ -12,10 +12,10 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     :return: Медианный возраст пользователя.
     """
     friends = get_friends(user_id, fields=["bdate"])
-    _, friends = friends.count, friends.items
+    _, friends_list = friends.count, friends.items
     year = dt.datetime.now().year
     ages = []
-    for i in friends:
+    for i in friends_list:
         try:
             if i["bdate"] and len(i["bdate"].split(".")) == 3:
                 ages.append(year - int(i["bdate"].split(".")[2]))

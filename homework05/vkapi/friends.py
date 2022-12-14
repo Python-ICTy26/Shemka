@@ -11,7 +11,7 @@ QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
 @dataclasses.dataclass(frozen=True)
 class FriendsResponse:
     count: int
-    items: tp.Union[tp.List[int], tp.List[tp.Dict[str, tp.Any]]]
+    items: tp.List[tp.Dict[str, tp.Any]]
 
 
 def get_friends(
@@ -58,7 +58,7 @@ def get_mutual(
     count: tp.Optional[int] = None,
     offset: int = 0,
     progress=None,
-) -> tp.Union[tp.List[int], tp.List[MutualFriends]]:
+) -> tp.Union[tp.List[int], tp.List[MutualFriends], None]:
     """
     Получить список идентификаторов общих друзей между парой пользователей.
 
@@ -105,10 +105,11 @@ def get_mutual(
             time_start = time.time()
             response = session.get("friends.getMutual", params=params).json()["response"]
             for r in response:
-                r = MutualFriends(**r)
+                r = MutualFriends(id=r["id"], common_friends=r["common_friends"], common_count=r["common_count"])
                 if r["common_count"] > 0:
                     mutual_friends.append(r)
 
             delay = max(1 - (time.time() - time_start), 0)
             time.sleep(delay)
         return mutual_friends
+    return None
