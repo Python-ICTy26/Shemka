@@ -19,9 +19,7 @@ def ego_network(
 
     if not friends:
         friends_response = get_friends(user_id=user_id, fields=["nickname"])
-        friends = [
-            user["id"] for user in friends_response.items if not user.get("deactivated")
-        ]
+        friends = [user["id"] for user in friends_response.items if not user.get("deactivated")]
     data = get_mutual(user_id, target_uids=friends)
     graph = []
     for user_data in data:

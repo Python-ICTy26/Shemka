@@ -103,9 +103,7 @@ def get_mutual(
         for offset in offset_iterator:
             params["offset"] = offset
             time_start = time.time()
-            response = session.get("friends.getMutual", params=params).json()[
-                "response"
-            ]
+            response = session.get("friends.getMutual", params=params).json()["response"]
             for r in response:
                 r = MutualFriends(**r)
                 if r["common_count"] > 0:
