@@ -3,9 +3,8 @@ import unittest
 from unittest.mock import patch
 from urllib.parse import unquote
 
-import pandas as pd
+import pandas as pd  # type: ignore
 import responses
-
 from vkapi.wall import get_wall_execute
 
 
@@ -67,4 +66,6 @@ class GetWallTestCase(unittest.TestCase):
             get_posts_2500.return_value = []
             _ = get_wall_execute(domain="cs102py", count=6000)
         end = time.time()
-        self.assertGreaterEqual(end - start, 2.0, msg="Слишком много запросов в секунду")
+        self.assertGreaterEqual(
+            end - start, 2.0, msg="Слишком много запросов в секунду"
+        )

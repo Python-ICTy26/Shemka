@@ -1,24 +1,36 @@
 import typing as tp
 from collections import defaultdict
 
-import community as community_louvain
-import matplotlib.pyplot as plt
-import networkx as nx
-import pandas as pd
-
+import community as community_louvain  # type: ignore
+import matplotlib.pyplot as plt  # type: ignore
+import networkx as nx  # type: ignore
+import pandas as pd  # type: ignore
 from vkapi.friends import get_friends, get_mutual
 
 
 def ego_network(
-    user_id: tp.Optional[int] = None, friends: tp.Optional[tp.List[int]] = None
+    user_id: int, friends: tp.Optional[tp.List[int]] = None
 ) -> tp.List[tp.Tuple[int, int]]:
     """
     Построить эгоцентричный граф друзей.
-
     :param user_id: Идентификатор пользователя, для которого строится граф друзей.
     :param friends: Идентификаторы друзей, между которыми устанавливаются связи.
     """
-    pass
+
+    if not friends:
+        friends_response = get_friends(user_id=user_id, fields=["nickname"])
+        friends = [user["id"] for user in friends_response.items if not user.get("deactivated")]
+    data = get_mutual(user_id, target_uids=friends)
+
+    if data is None:
+        raise ValueError("no mutual friends!")
+
+    graph = []
+    for user_data in data:
+        for user_friend in user_data["common_friends"]: # type: ignore
+            graph.append((user_data["id"], user_friend)) # type: ignore
+
+    return graph
 
 
 def plot_ego_network(net: tp.List[tp.Tuple[int, int]]) -> None:
