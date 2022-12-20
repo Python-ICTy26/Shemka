@@ -17,9 +17,7 @@ class CheckoutTestCase(TestCase):
     def test_checkout(self):
         gitdir = repo_create(".")
         author = "Git User <gituser@example.com>"
-        mode100644 = (
-            stat.S_IFREG | stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH
-        )
+        mode100644 = stat.S_IFREG | stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH
         quote = pathlib.Path("quote.txt")
         self.fs.create_file(quote, contents="that's what she said", st_mode=mode100644)
         letters = pathlib.Path("letters.txt")
@@ -52,9 +50,7 @@ class CheckoutTestCase(TestCase):
     def test_checkout_untracked_files_are_not_deleted(self):
         gitdir = repo_create(".")
         author = "Git User <gituser@example.com>"
-        mode100644 = (
-            stat.S_IFREG | stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH
-        )
+        mode100644 = stat.S_IFREG | stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH
         quote = pathlib.Path("quote.txt")
         self.fs.create_file(quote, contents="that's what she said", st_mode=mode100644)
         letters = pathlib.Path("letters.txt")
@@ -92,9 +88,7 @@ class CheckoutTestCase(TestCase):
     def test_checkout_dirs_are_deleted(self):
         gitdir = repo_create(".")
         author = "Git User <gituser@example.com>"
-        mode100644 = (
-            stat.S_IFREG | stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH
-        )
+        mode100644 = stat.S_IFREG | stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH
         quote = pathlib.Path("quote.txt")
         self.fs.create_file(quote, contents="that's what she said", st_mode=mode100644)
         add(gitdir, [quote])

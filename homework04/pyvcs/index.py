@@ -115,9 +115,7 @@ def ls_files(gitdir: pathlib.Path, details: bool = False) -> None:
             print(entry.name)
 
 
-def update_index(
-    gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True
-) -> None:
+def update_index(gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True) -> None:
     entries = read_index(gitdir)
     for path in paths:
         with open(path, "rb") as f:
