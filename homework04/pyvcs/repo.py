@@ -50,5 +50,5 @@ def repo_create(workdir: tp.Union[str, pathlib.Path]) -> pathlib.Path:
 
         with open(gitdir / "description", "w") as f:
             f.write("Unnamed pyvcs repository.\n")
-            
+
         return gitdir

@@ -2,7 +2,9 @@ import pathlib
 import typing as tp
 
 
-def update_ref(gitdir: pathlib.Path, ref: tp.Union[str, pathlib.Path], new_value: str) -> None:
+def update_ref(
+    gitdir: pathlib.Path, ref: tp.Union[str, pathlib.Path], new_value: str
+) -> None:
     with open(gitdir / ref, "w") as f:
         f.write(new_value)
 
@@ -37,7 +39,7 @@ def is_detached(gitdir: pathlib.Path) -> bool:
 def get_ref(gitdir: pathlib.Path) -> str:
     with open(gitdir / "HEAD") as f:
         data = f.read()
-        
+
         if "ref:" in data:
             return data.split()[1]
         else:

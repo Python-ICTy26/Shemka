@@ -62,7 +62,19 @@ class GitIndexEntry(tp.NamedTuple):
         ) = struct.unpack(">LLLLLLLLLL20sH", data[:62])
         name = data[62:].split(b"\x00")[0].decode()
         return GitIndexEntry(
-            ctime_s, ctime_n, mtime_s, mtime_n, dev, ino, mode, uid, gid, size, sha1, flags, name
+            ctime_s,
+            ctime_n,
+            mtime_s,
+            mtime_n,
+            dev,
+            ino,
+            mode,
+            uid,
+            gid,
+            size,
+            sha1,
+            flags,
+            name,
         )
 
 
@@ -98,14 +110,14 @@ def ls_files(gitdir: pathlib.Path, details: bool = False) -> None:
     entries = read_index(gitdir)
     for entry in entries:
         if details:
-            print(
-                f"{entry.mode:o} {entry.sha1.hex()} 0\t{entry.name}"
-            )
+            print(f"{entry.mode:o} {entry.sha1.hex()} 0\t{entry.name}")
         else:
             print(entry.name)
 
 
-def update_index(gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True) -> None:
+def update_index(
+    gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True
+) -> None:
     entries = read_index(gitdir)
     for path in paths:
         with open(path, "rb") as f:
